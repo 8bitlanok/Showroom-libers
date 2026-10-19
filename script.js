@@ -1,80 +1,66 @@
-const WHATSAPP_NUMBER = "628126458294";
-const cars = [
-  {id:"avanza-2019",brand:"avanza",make:"Toyota",model:"Avanza",year:2019,price:145000000,transmission:"Manual",km:"78.000 KM",color:"Putih",fuel:"Bensin",tax:"Hidup",condition:"Lecet tipis di bumper belakang",description:"Mobil keluarga irit, kondisi terawat, cocok buat harian dan usaha. Interior bersih, mesin normal, dan unit siap pakai.",image:"images/avanza-2019/depan.png",imageAlt:"Toyota Avanza 2019",priceBand:"low"},
-  {id:"avanza-2021",brand:"avanza",make:"Toyota",model:"Avanza",year:2021,price:175000000,transmission:"Automatic",km:"42.000 KM",color:"Silver",fuel:"Bensin",tax:"Hidup",condition:"Lecet halus di pintu samping",description:"Unit muda, interior bersih, nyaman buat keluarga. Kondisi umum bagus dan siap pakai.",image:"",imageAlt:"Toyota Avanza 2021",priceBand:"mid"},
-  {id:"xenia-2018",brand:"xenia",make:"Daihatsu",model:"Xenia",year:2018,price:132000000,transmission:"Manual",km:"Konfirmasi showroom",color:"Konfirmasi showroom",fuel:"Konfirmasi showroom",tax:"Konfirmasi showroom",condition:"Konfirmasi showroom",description:"Mobil keluarga ekonomis, perawatan mudah, cocok buat kebutuhan harian.",image:"",imageAlt:"Daihatsu Xenia 2018",priceBand:"low"},
-  {id:"xenia-2020",brand:"xenia",make:"Daihatsu",model:"Xenia",year:2020,price:145000000,transmission:"Automatic",km:"Konfirmasi showroom",color:"Konfirmasi showroom",fuel:"Konfirmasi showroom",tax:"Konfirmasi showroom",condition:"Konfirmasi showroom",description:"Tampilan modern, kabin lega, cocok buat perjalanan jauh.",image:"",imageAlt:"Daihatsu Xenia 2020",priceBand:"low"},
-  {id:"innova-2017",brand:"innova",make:"Toyota",model:"Kijang Innova",year:2017,price:215000000,transmission:"Manual",km:"89.000 KM",color:"Abu-abu",fuel:"Diesel",tax:"Hidup",condition:"Lecet ringan di spatbor depan",description:"Mobil besar, nyaman, cocok buat keluarga atau operasional. Kabin lega dan nyaman untuk perjalanan jauh.",image:"",imageAlt:"Kijang Innova 2017",priceBand:"mid"},
-  {id:"innova-2020",brand:"innova",make:"Toyota",model:"Kijang Innova",year:2020,price:265000000,transmission:"Automatic",km:"36.000 KM",color:"Silver",fuel:"Diesel",tax:"Hidup",condition:"Baret sangat halus di pintu kiri",description:"Unit premium, cocok buat yang cari kenyamanan dan tampilan lebih modern. Kilometer rendah dan siap cek unit.",image:"",imageAlt:"Kijang Innova 2020",priceBand:"high"},
-  {id:"pajero-2019",brand:"pajero",make:"Mitsubishi",model:"Pajero Sport",year:2019,price:410000000,transmission:"Automatic",km:"62.000 KM",color:"Hitam",fuel:"Diesel",tax:"Hidup",condition:"Lecet tipis di pintu belakang kanan",description:"SUV tangguh untuk perjalanan jauh maupun penggunaan harian. Unit terawat dengan pajak aktif.",image:"",imageAlt:"Mitsubishi Pajero Sport 2019",priceBand:"high"},
-  {id:"pajero-2021",brand:"pajero",make:"Mitsubishi",model:"Pajero Sport",year:2021,price:465000000,transmission:"Automatic",km:"31.000 KM",color:"Putih",fuel:"Diesel",tax:"Hidup",condition:"Baret tipis di bumper belakang",description:"Unit lebih baru dengan fitur lengkap, cocok untuk pembeli yang mencari SUV premium.",image:"",imageAlt:"Mitsubishi Pajero Sport 2021",priceBand:"high"}
-];
-const grid = document.querySelector("#carGrid");
-const searchInput = document.querySelector("#searchInput");
-const brandFilter = document.querySelector("#brandFilter");
-const priceFilter = document.querySelector("#priceFilter");
-const yearFilter = document.querySelector("#yearFilter");
-const resultCount = document.querySelector("#resultCount");
-const emptyState = document.querySelector("#emptyState");
-const dialog = document.querySelector("#carDialog");
-const dialogContent = document.querySelector("#dialogContent");
-const formatPrice = value => "Rp" + new Intl.NumberFormat("id-ID").format(value);
-const slugBrand = brand => ({avanza:"Toyota",xenia:"Daihatsu",innova:"Toyota",pajero:"Mitsubishi"}[brand] || "");
-const placeholder = (car, extraClass = "") => `<div class="car-placeholder ${extraClass}" role="img" aria-label="Placeholder foto ${car.make} ${car.model} ${car.year}"><span class="car-icon" aria-hidden="true">🚘</span><span>Foto unit segera tersedia</span></div>`;
-function cardMarkup(car){
-  const visual = car.image
-    ? `<img class="car-image" src="${car.image}" alt="${car.imageAlt}" loading="lazy" onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'car-placeholder car-placeholder-card',innerHTML:'<span class=&quot;car-icon&quot;>🚘</span><span>Foto unit segera tersedia</span>'}))">`
-    : placeholder(car,"car-placeholder-card");
-  const specs = [car.transmission,car.km !== "Konfirmasi showroom" ? car.km : ""].filter(Boolean).map(item=>`<span>${item}</span>`).join("");
-  return `<article class="car-card">
-    <div class="car-image-wrap">${visual}<span class="car-year">${car.year}</span><span class="car-status">Bisa nego</span></div>
-    <div class="car-body"><span class="car-brand">${car.make}</span><h3 class="car-title">${car.model} ${car.year}</h3><div class="car-price">${formatPrice(car.price)} <small>/ nego</small></div>
-    <div class="car-specs">${specs}</div><p class="car-desc">${car.description}</p>
-    <div class="car-actions"><button class="detail-button" type="button" data-detail="${car.id}">Detail unit <span>↗</span></button><button class="wa-button" type="button" data-wa="${car.id}">Tanya unit</button></div></div>
-  </article>`;
-}
-function getFilteredCars(){
-  const term = searchInput.value.trim().toLocaleLowerCase("id");
-  return cars.filter(car=>{
-    const searchable = `${car.make} ${car.model} ${car.year} ${car.transmission}`.toLocaleLowerCase("id");
-    return (!term || searchable.includes(term)) &&
-      (brandFilter.value === "all" || car.brand === brandFilter.value) &&
-      (priceFilter.value === "all" || (priceFilter.value === "low" ? car.price < 150000000 : priceFilter.value === "mid" ? car.price >= 150000000 && car.price <= 250000000 : car.price > 250000000)) &&
-      (yearFilter.value === "all" || String(car.year) === yearFilter.value);
+/* Demo front-end only. localStorage is per browser/device and is not a secure database. */
+(function () {
+  "use strict";
+  const STORAGE_KEY = "libers-showroom-demo-cars-v1";
+  const defaults = [
+    {id:"avanza-2019",make:"Toyota",model:"Avanza",year:2019,price:145000000,transmission:"Manual",km:"78.000 KM",status:"Demo",image:"images/avanza-2019/depan.png"},
+    {id:"avanza-2021",make:"Toyota",model:"Avanza",year:2021,price:175000000,transmission:"Automatic",km:"Data contoh",status:"Demo",image:""},
+    {id:"xenia-2018",make:"Daihatsu",model:"Xenia",year:2018,price:132000000,transmission:"Manual",km:"Data contoh",status:"Demo",image:""},
+    {id:"xenia-2020",make:"Daihatsu",model:"Xenia",year:2020,price:145000000,transmission:"Automatic",km:"Data contoh",status:"Demo",image:""},
+    {id:"innova-2017",make:"Toyota",model:"Kijang Innova",year:2017,price:215000000,transmission:"Manual",km:"Data contoh",status:"Demo",image:""},
+    {id:"innova-2020",make:"Toyota",model:"Kijang Innova",year:2020,price:265000000,transmission:"Automatic",km:"Data contoh",status:"Demo",image:""},
+    {id:"pajero-2019",make:"Mitsubishi",model:"Pajero Sport",year:2019,price:410000000,transmission:"Automatic",km:"Data contoh",status:"Demo",image:""},
+    {id:"pajero-2021",make:"Mitsubishi",model:"Pajero Sport",year:2021,price:465000000,transmission:"Automatic",km:"Data contoh",status:"Demo",image:""}
+  ];
+  const escapeHTML = value => String(value == null ? "" : value).replace(/[&<>"']/g, char => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[char]));
+  const money = value => "Rp" + new Intl.NumberFormat("id-ID").format(Number(value) || 0);
+  function readCars() {
+    try { const saved = JSON.parse(localStorage.getItem(STORAGE_KEY)); if (Array.isArray(saved)) return saved; } catch (_) {}
+    return defaults.map(car => Object.assign({}, car));
+  }
+  let cars = readCars();
+  const grid = document.getElementById("carGrid");
+  if (!grid) return;
+  const search = document.getElementById("searchInput");
+  const brand = document.getElementById("brandFilter");
+  const year = document.getElementById("yearFilter");
+  const price = document.getElementById("priceFilter");
+  const count = document.getElementById("resultCount");
+  const empty = document.getElementById("emptyState");
+  const dialog = document.getElementById("carDialog");
+  const dialogContent = document.getElementById("dialogContent");
+  const visual = car => car.image ? '<img class="car-photo" src="' + escapeHTML(car.image) + '" alt="Foto contoh ' + escapeHTML(car.make + " " + car.model) + '" onerror="this.hidden=true;this.nextElementSibling.hidden=false"><div class="car-placeholder" hidden><span>🚘</span><small>GAMBAR DEMO</small></div>' : '<div class="car-placeholder"><span>🚘</span><small>GAMBAR DEMO</small></div>';
+  function filteredCars() {
+    const term = search.value.trim().toLocaleLowerCase("id");
+    return cars.filter(car => {
+      const matchesTerm = (car.make + " " + car.model + " " + car.year).toLocaleLowerCase("id").includes(term);
+      const matchesBrand = brand.value === "all" || car.make === brand.value;
+      const matchesYear = year.value === "all" || String(car.year) === year.value;
+      const p = Number(car.price) || 0;
+      const matchesPrice = price.value === "all" || (price.value === "low" ? p < 150000000 : price.value === "mid" ? p >= 150000000 && p <= 250000000 : p > 250000000);
+      return matchesTerm && matchesBrand && matchesYear && matchesPrice;
+    });
+  }
+  function render() {
+    const result = filteredCars();
+    count.textContent = result.length;
+    empty.hidden = result.length > 0;
+    grid.hidden = result.length === 0;
+    grid.innerHTML = result.map(car => '<article class="car-card"><div class="car-image-wrap">' + visual(car) + '<span class="demo-stamp">UNIT DEMO</span><span class="car-year">' + escapeHTML(car.year) + '</span></div><div class="car-body"><span class="car-brand">' + escapeHTML(car.make) + '</span><h3>' + escapeHTML(car.model) + ' ' + escapeHTML(car.year) + '</h3><p class="price">' + money(car.price) + ' <small>simulasi</small></p><div class="specs"><span>' + escapeHTML(car.transmission || "Data contoh") + '</span><span>' + escapeHTML(car.km || "Data contoh") + '</span></div><div class="card-bottom"><span class="stock-demo">● ' + escapeHTML(car.status || "Demo") + '</span><button type="button" data-detail="' + escapeHTML(car.id) + '">Lihat detail ↗</button></div></div></article>').join("");
+  }
+  function reset() { search.value = ""; brand.value = "all"; year.value = "all"; price.value = "all"; render(); }
+  [search,brand,year,price].forEach(el => el.addEventListener(el === search ? "input" : "change", render));
+  document.getElementById("resetFilters").addEventListener("click", reset);
+  document.getElementById("emptyReset").addEventListener("click", reset);
+  grid.addEventListener("click", event => {
+    const button = event.target.closest("[data-detail]");
+    if (!button) return;
+    const car = cars.find(item => item.id === button.dataset.detail);
+    if (!car) return;
+    dialogContent.innerHTML = '<div class="detail-modal">' + visual(car) + '<span class="demo-stamp modal-stamp">DATA DEMO</span><p class="eyebrow eyebrow-dark">' + escapeHTML(car.make) + ' • ' + escapeHTML(car.year) + '</p><h2 id="dialogTitle">' + escapeHTML(car.model) + ' ' + escapeHTML(car.year) + '</h2><p class="price">' + money(car.price) + ' <small>harga simulasi</small></p><div class="detail-specs"><div><small>Transmisi</small><strong>' + escapeHTML(car.transmission || "Data contoh") + '</strong></div><div><small>Kilometer</small><strong>' + escapeHTML(car.km || "Data contoh") + '</strong></div><div><small>Status</small><strong>' + escapeHTML(car.status || "Demo") + '</strong></div></div><p>Ini adalah contoh halaman detail kendaraan. Spesifikasi, harga, kondisi, dan ketersediaan harus diverifikasi sebelum digunakan untuk pelanggan.</p><div class="contact-placeholder"><span>i</span><div><strong>Kontak belum diaktifkan</strong><small>Nomor resmi akan ditambahkan setelah dikonfirmasi.</small></div></div></div>';
+    dialog.showModal();
   });
-}
-function renderCars(){
-  const filtered = getFilteredCars();
-  grid.innerHTML = filtered.map(cardMarkup).join("");
-  resultCount.textContent = filtered.length;
-  emptyState.hidden = filtered.length !== 0;
-  grid.hidden = filtered.length === 0;
-}
-function waLink(car){
-  const message = `Halo Showroom Libers, saya tertarik dengan ${car.make} ${car.model} tahun ${car.year} dengan harga ${formatPrice(car.price)}. Apakah unit ini masih tersedia?`;
-  return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
-}
-function openDetails(id){
-  const car = cars.find(item=>item.id===id);
-  if(!car)return;
-  const visual = car.image
-    ? `<img src="${car.image}" alt="${car.imageAlt}" onerror="this.replaceWith(document.createTextNode('Foto unit belum tersedia'))">`
-    : placeholder(car,"car-placeholder-card");
-  const rows = [["Merek / model",`${car.make} ${car.model}`],["Tahun",car.year],["Transmisi",car.transmission],["Kilometer",car.km],["Warna",car.color],["Bahan bakar",car.fuel],["Pajak",car.tax],["Catatan kondisi",car.condition]];
-  dialogContent.innerHTML = `<div class="dialog-content"><div class="dialog-image">${visual}</div><span class="car-brand">${car.make} • ${car.year}</span><h2 class="dialog-title" id="dialogTitle">${car.model} ${car.year}</h2><p class="dialog-price">${formatPrice(car.price)}</p><p class="dialog-meta">Harga masih bisa dinegosiasikan • Status dan detail terbaru dikonfirmasi showroom</p><div class="dialog-specs">${rows.map(([label,value])=>`<div class="dialog-spec"><small>${label}</small><strong>${value}</strong></div>`).join("")}</div><p class="dialog-description">${car.description}</p><div class="dialog-cta"><a class="button button-dark" href="${waLink(car)}" target="_blank" rel="noopener noreferrer">Tanya unit via WhatsApp ↗</a><button class="button button-outline" type="button" id="dialogBack">Kembali ke katalog</button></div></div>`;
-  dialog.showModal();
-  dialog.querySelector("#dialogBack").addEventListener("click",()=>dialog.close());
-}
-[searchInput,brandFilter,priceFilter,yearFilter].forEach(control=>control.addEventListener(control===searchInput?"input":"change",renderCars));
-function resetFilters(){searchInput.value="";brandFilter.value="all";priceFilter.value="all";yearFilter.value="all";renderCars()}
-document.querySelector("#resetFilters").addEventListener("click",resetFilters);
-document.querySelector("#emptyReset").addEventListener("click",resetFilters);
-document.querySelector("#dialogClose").addEventListener("click",()=>dialog.close());
-dialog.addEventListener("click",event=>{if(event.target===dialog)dialog.close()});
-grid.addEventListener("click",event=>{
-  const detailButton=event.target.closest("[data-detail]");
-  const waButton=event.target.closest("[data-wa]");
-  if(detailButton)openDetails(detailButton.dataset.detail);
-  if(waButton){const car=cars.find(item=>item.id===waButton.dataset.wa);if(car)window.open(waLink(car),"_blank","noopener,noreferrer")}
-});
-renderCars();
+  document.getElementById("dialogClose").addEventListener("click", () => dialog.close());
+  dialog.addEventListener("click", event => { if (event.target === dialog) dialog.close(); });
+  render();
+})();

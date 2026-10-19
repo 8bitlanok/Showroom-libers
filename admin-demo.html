@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101d2d">
+  <title>Dashboard Demo | Showroom Libers</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .admin-wrap{max-width:1180px;margin:0 auto;padding:35px 22px 70px}.admin-top{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:25px}.admin-top h1{font:800 clamp(28px,4vw,40px)/1.1 var(--display);margin:0}.admin-top p{font-size:12px;color:var(--muted);margin:9px 0 0}.back-link{font-size:11px;font-weight:800;text-decoration:underline;text-underline-offset:4px}.warning{padding:14px 16px;border:1px solid #e8d18b;background:#fff6dc;color:#69531a;border-radius:11px;font-size:11px;line-height:1.7;margin-bottom:22px}.warning strong{display:block;margin-bottom:3px}.admin-grid{display:grid;grid-template-columns:.85fr 1.15fr;gap:20px;align-items:start}.panel{background:#fff;border:1px solid var(--line);border-radius:15px;padding:20px;min-width:0}.panel h2{font:800 19px var(--display);margin:0 0 5px}.panel-intro{font-size:11px;color:var(--muted);margin:0 0 17px}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.form-grid label{display:flex;flex-direction:column;gap:5px;font-size:10px;font-weight:800;color:#596575}.form-grid label.full{grid-column:1/-1}.form-grid input,.form-grid select{height:42px;border:1px solid var(--line);border-radius:8px;padding:0 10px;min-width:0;background:#fcfcfa;font-size:12px;color:var(--ink)}.form-actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:16px}.secondary{background:#eef1e9;color:#3c4b22}.admin-list{display:flex;flex-direction:column;gap:9px}.admin-row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px;border:1px solid #e9ece7;border-radius:10px}.admin-row strong{display:block;font-size:12px}.admin-row small{display:block;color:var(--muted);font-size:10px;margin-top:4px}.admin-row-actions{display:flex;gap:6px;flex-shrink:0}.admin-row-actions button{border:0;border-radius:6px;padding:8px 9px;font-size:9px;font-weight:800;cursor:pointer}.edit-btn{background:#edf3d8;color:#46591c}.delete-btn{background:#fff0ee;color:#9c3c30}.admin-count{font-size:10px;color:var(--muted);margin-bottom:12px}.admin-footer{text-align:center;font-size:10px;color:var(--muted);margin-top:22px}
+    @media(max-width:800px){.admin-grid{grid-template-columns:1fr}.admin-wrap{padding:25px 16px 55px}.panel{padding:16px}.admin-top{align-items:flex-start}.admin-top .brand{display:none}}
+    @media(max-width:420px){.form-grid{grid-template-columns:1fr}.form-grid label.full{grid-column:auto}.admin-row{align-items:flex-start}.admin-row-actions{flex-direction:column}.admin-row-actions button{min-width:54px}}
+  </style>
+</head>
+<body>
+  <div class="demo-banner"><span class="demo-pill">DASHBOARD DEMO</span><span>Simulasi lokal. Tidak ada login atau database aman pada versi ini.</span><a href="index.html">Lihat website ↗</a></div>
+  <main class="admin-wrap">
+    <div class="admin-top"><div><p class="eyebrow eyebrow-dark">SHOWROOM LIBERS • PANEL SIMULASI</p><h1>Kelola katalog mobil</h1><p>Tambah, edit, atau hapus unit contoh untuk mencoba alur kerja admin.</p></div><a class="back-link" href="index.html">← Kembali ke katalog</a></div>
+    <div class="warning"><strong>⚠ Hanya untuk demo, jangan masukkan data rahasia atau data pelanggan.</strong>Perubahan disimpan di localStorage browser ini saja. Pengunjung lain tidak akan melihat perubahan yang sama. Halaman ini tidak memiliki autentikasi dan tidak aman untuk penggunaan bisnis sungguhan. Dashboard produksi nantinya memerlukan backend, autentikasi, dan aturan akses.</div>
+    <div class="admin-grid">
+      <section class="panel"><h2 id="formTitle">Tambah unit demo</h2><p class="panel-intro">Semua harga dan spesifikasi di sini adalah simulasi.</p>
+        <form id="carForm">
+          <input type="hidden" id="carId">
+          <div class="form-grid">
+            <label>Merek<select id="make" required><option>Toyota</option><option>Daihatsu</option><option>Mitsubishi</option><option>Honda</option><option>Suzuki</option></select></label>
+            <label>Model<input id="model" maxlength="60" placeholder="Contoh: Avanza" required></label>
+            <label>Tahun<input id="year" type="number" min="1990" max="2035" value="2020" required></label>
+            <label>Harga simulasi (Rp)<input id="price" type="number" min="0" step="100000" value="150000000" required></label>
+            <label>Transmisi<select id="transmission"><option>Manual</option><option>Automatic</option><option>Data contoh</option></select></label>
+            <label>Status demo<select id="status"><option>Demo</option><option>Contoh terjual</option><option>Contoh tersedia</option></select></label>
+            <label class="full">Kilometer<input id="km" maxlength="30" value="Data contoh" placeholder="Contoh: 50.000 KM"></label>
+            <label class="full">Path foto (opsional)<input id="image" maxlength="180" placeholder="images/nama-folder/foto.png"></label>
+          </div>
+          <div class="form-actions"><button class="button button-dark" type="submit" id="saveButton">Simpan unit demo</button><button class="button secondary" type="button" id="cancelEdit" hidden>Batal edit</button></div>
+        </form>
+      </section>
+      <section class="panel"><h2>Daftar unit</h2><p class="panel-intro">Edit data di sini lalu buka katalog untuk melihat perubahan pada browser yang sama.</p><div class="admin-count" id="adminCount"></div><div class="admin-list" id="adminList"></div><div class="form-actions"><button class="button secondary" type="button" id="resetDemo">Pulihkan data demo awal</button></div></section>
+    </div>
+    <p class="admin-footer">Showroom Libers • Prototipe front-end • Belum terhubung ke database</p>
+  </main>
+  <script src="admin-demo.js"></script>
+</body>
+</html>

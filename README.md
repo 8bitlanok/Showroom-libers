@@ -1,22 +1,37 @@
-# Showroom Libers Motor — Mobile-first website
+# Showroom Libers — Demo Portofolio
 
-Website katalog mobil bekas untuk Showroom Libers Motor, dibuat sebagai contoh yang mengutamakan tampilan ponsel dan tetap responsif di desktop.
+Website katalog mobil bekas untuk demonstrasi portofolio. Dipublikasikan melalui GitHub Pages dan dibuat dengan HTML, CSS, dan JavaScript biasa.
 
-## Cara menjalankan
-Buka `index.html` di browser, atau jalankan melalui GitHub Pages. Tidak memerlukan framework, build tool, atau database.
+## Halaman
+- `index.html`: katalog publik demo, pencarian, filter, dan detail kendaraan.
+- `admin-demo.html`: simulasi dashboard untuk menambah, mengedit, dan menghapus data demo.
+- `script.js`: katalog demo; membaca data lokal browser jika tersedia.
+- `admin-demo.js`: alur pengelolaan data demo lokal.
+- `style.css`: tampilan responsif untuk HP dan desktop.
 
-## Fitur
-- Layout mobile-first dan responsif.
-- Katalog delapan unit yang tercantum di website sebelumnya.
-- Filter merek, tahun, kisaran harga, dan pencarian.
-- Detail unit dalam dialog.
-- Tombol WhatsApp dengan pesan otomatis sesuai unit.
-- Kontak, alamat, peta, dan tombol WhatsApp yang mudah ditemukan.
-- Placeholder foto untuk unit yang belum memiliki foto.
+## Penting: batasan prototipe
+- Seluruh harga, status stok, spesifikasi, dan data kendaraan adalah data simulasi dan harus diverifikasi sebelum situs digunakan secara resmi.
+- Foto kendaraan yang tampil diberi penanda demo; jangan anggap sebagai bukti unit tersedia.
+- Nomor WhatsApp dan kontak eksternal sengaja tidak diaktifkan sampai nomor resmi dikonfirmasi.
+- Dashboard menggunakan `localStorage` browser. Data hanya tersedia di browser/perangkat yang sama, bukan tersinkron ke pengunjung lain.
+- Dashboard ini tidak memiliki autentikasi dan bukan dashboard produksi. Jangan masukkan data pelanggan atau informasi rahasia.
+- GitHub Pages hanya menyajikan file statis. Untuk admin sungguhan dibutuhkan backend/database, autentikasi, aturan akses, dan penyimpanan foto yang aman.
 
-## Sumber data dan catatan
-Data unit, harga, spesifikasi, deskripsi, nomor WhatsApp, alamat, dan peta diambil dari versi sebelumnya di repository ini. Nomor kontak yang dipakai adalah **0812-6458-294** (tautan WhatsApp: `628126458294`), sesuai kontak pada halaman utama sebelumnya. Halaman detail lama berisi nomor WhatsApp berbeda, jadi nomor itu tidak dipakai.
+## Cara mencoba
+1. Buka situs GitHub Pages.
+2. Pilih **Buka dashboard demo**.
+3. Tambah/edit/hapus unit contoh.
+4. Kembali ke katalog pada browser dan perangkat yang sama untuk melihat perubahan.
+5. Gunakan tombol pulihkan data demo awal untuk mengembalikan katalog contoh.
 
-Untuk Daihatsu Xenia 2018 dan 2020, data kilometer, warna, bahan bakar, pajak, dan kondisi tidak tersedia secara konsisten di halaman katalog. Karena itu, detail tersebut ditandai sebagai “Konfirmasi showroom”, bukan ditebak. Foto unit yang belum tersedia menggunakan placeholder.
+## Checklist sebelum peluncuran resmi
+- [ ] Verifikasi nama usaha, logo, alamat, jam operasional, dan kontak resmi.
+- [ ] Verifikasi setiap kendaraan, harga, kilometer, spesifikasi, kondisi, dan status stok.
+- [ ] Ganti seluruh foto placeholder dengan foto unit yang benar dan berizin.
+- [ ] Pastikan tombol kontak mengarah ke nomor resmi.
+- [ ] Implementasikan backend, autentikasi admin, kebijakan akses, serta unggah gambar yang aman.
+- [ ] Uji aksesibilitas, HP/desktop, filter, formulir, dan keamanan.
+- [ ] Pindahkan ke hosting yang sesuai sebelum penggunaan bisnis resmi.
 
-**Catatan:** katalog ini merupakan contoh front-end statis. Data belum terhubung ke database/admin panel, jadi perubahan stok dan harga harus dilakukan di `script.js`. Pastikan harga, status ketersediaan, dan seluruh spesifikasi unit diverifikasi sebelum website dipakai sebagai kanal penjualan aktif.
+## Deploy
+GitHub Pages dikonfigurasi dari branch `main`, root repository. Perubahan pada branch tersebut akan memicu publikasi GitHub Pages.
